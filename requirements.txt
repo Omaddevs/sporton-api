@@ -15,3 +15,8 @@ PyJWT==2.12.1
 requests==2.32.5
 sqlparse==0.5.5
 Pillow==11.1.0
+python-dotenv
+gunicorn
+dj-database-url
+psycopg2-binary
+whitenoise
