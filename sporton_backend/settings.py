@@ -42,11 +42,17 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    
+    # 3rd party
     'rest_framework',
-    'drf_spectacular',
-    'corsheaders',
     'django_filters',
     'rest_framework_simplejwt',
+    'corsheaders',
+    'drf_spectacular',
+    'cloudinary_storage',
+    'cloudinary',
+
+    # Local
     'accounts',
     'notifications',
     'gyms',
@@ -136,6 +142,11 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+# CLOUDINARY (Media files on Render/Production)
+if env('CLOUDINARY_URL', default=None):
+    DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
 
 
 # Django REST Framework
