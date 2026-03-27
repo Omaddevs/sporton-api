@@ -68,6 +68,19 @@ class GymAdminForm(forms.ModelForm):
         help_text="Misol: 50000 yoki 50.000",
     )
 
+    telegram_url = forms.CharField(
+        required=False,
+        label='Telegram havolasi',
+        help_text="Ixtiyoriy. Masalan: https://t.me/username — bo'sh bo'lsa ilovada tugma ko'rinmaydi.",
+        widget=forms.URLInput(attrs={'style': 'width:100%', 'placeholder': 'https://t.me/...'}),
+    )
+    instagram_url = forms.CharField(
+        required=False,
+        label='Instagram havolasi',
+        help_text="Ixtiyoriy. Masalan: https://www.instagram.com/username/",
+        widget=forms.URLInput(attrs={'style': 'width:100%', 'placeholder': 'https://instagram.com/...'}),
+    )
+
     def _parse_price(self, value):
         """400.000 / 400,000 / 400 000 / 400-000 → 400000 (int)"""
         if not value:
@@ -90,8 +103,6 @@ class GymAdminForm(forms.ModelForm):
         widgets = {
             'google_maps_url': forms.URLInput(attrs={'style': 'width:100%'}),
             'yandex_maps_url': forms.URLInput(attrs={'style': 'width:100%'}),
-            'telegram_url': forms.URLInput(attrs={'style': 'width:100%', 'placeholder': 'https://t.me/...'}),
-            'instagram_url': forms.URLInput(attrs={'style': 'width:100%', 'placeholder': 'https://instagram.com/...'}),
             'description': forms.Textarea(attrs={'rows': 4}),
             'categories': CheckboxSelectMultiple(),
         }
@@ -153,12 +164,13 @@ class GymAdmin(admin.ModelAdmin):
         ("Ko'rinish", {
             'fields': ('gradient', 'accent_color', 'cover_thumb'),
         }),
-        ("Joylashuv", {
-            'fields': ('lat', 'lng', 'google_maps_url', 'yandex_maps_url'),
-        }),
-        ("Telegram va Instagram", {
-            'fields': ('telegram_url', 'instagram_url'),
-            'description': "Ixtiyoriy. Bo'sh bo'lsa, ilovada pastki tugmalar ko'rinmaydi.",
+        ("Joylashuv va ijtimoiy tarmoqlar", {
+            'fields': (
+                'lat', 'lng',
+                'google_maps_url', 'yandex_maps_url',
+                'telegram_url', 'instagram_url',
+            ),
+            'description': "Telegram va Instagram ixtiyoriy — faqat to'ldirilganlari mobil ilovada pastki tugmalar sifatida chiqadi.",
         }),
     )
 
