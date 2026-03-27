@@ -54,6 +54,8 @@ class GymSerializer(serializers.ModelSerializer):
     accentColor = serializers.CharField(source='accent_color')
     googleMapsUrl = serializers.CharField(source='google_maps_url', allow_blank=True, required=False)
     yandexMapsUrl = serializers.CharField(source='yandex_maps_url', allow_blank=True, required=False)
+    telegramUrl = serializers.CharField(source='telegram_url', allow_blank=True, required=False, max_length=500)
+    instagramUrl = serializers.CharField(source='instagram_url', allow_blank=True, required=False, max_length=500)
     images = serializers.SerializerMethodField()
     categories = GymCategorySerializer(many=True, read_only=True)
     ratingCount = serializers.SerializerMethodField()
@@ -68,6 +70,7 @@ class GymSerializer(serializers.ModelSerializer):
             'description', 'monthlyPrice', 'entryPrice', 'hours', 'isOpen',
             'facilities', 'sports', 'categories', 'gradient', 'accentColor',
             'lat', 'lng', 'images', 'googleMapsUrl', 'yandexMapsUrl',
+            'telegramUrl', 'instagramUrl',
             'reviews',
         ]
 

@@ -70,6 +70,8 @@ class Gym(models.Model):
 
     google_maps_url = models.CharField(max_length=1000, blank=True, default='', verbose_name="Google Maps havolasi")
     yandex_maps_url = models.CharField(max_length=1000, blank=True, default='', verbose_name="Yandex Maps havolasi")
+    telegram_url = models.URLField(max_length=500, blank=True, default='', verbose_name="Telegram")
+    instagram_url = models.URLField(max_length=500, blank=True, default='', verbose_name="Instagram")
 
     class Meta:
         ordering = ['-rating']

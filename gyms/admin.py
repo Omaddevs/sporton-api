@@ -90,6 +90,8 @@ class GymAdminForm(forms.ModelForm):
         widgets = {
             'google_maps_url': forms.URLInput(attrs={'style': 'width:100%'}),
             'yandex_maps_url': forms.URLInput(attrs={'style': 'width:100%'}),
+            'telegram_url': forms.URLInput(attrs={'style': 'width:100%', 'placeholder': 'https://t.me/...'}),
+            'instagram_url': forms.URLInput(attrs={'style': 'width:100%', 'placeholder': 'https://instagram.com/...'}),
             'description': forms.Textarea(attrs={'rows': 4}),
             'categories': CheckboxSelectMultiple(),
         }
@@ -153,6 +155,10 @@ class GymAdmin(admin.ModelAdmin):
         }),
         ("Joylashuv", {
             'fields': ('lat', 'lng', 'google_maps_url', 'yandex_maps_url'),
+        }),
+        ("Telegram va Instagram", {
+            'fields': ('telegram_url', 'instagram_url'),
+            'description': "Ixtiyoriy. Bo'sh bo'lsa, ilovada pastki tugmalar ko'rinmaydi.",
         }),
     )
 
