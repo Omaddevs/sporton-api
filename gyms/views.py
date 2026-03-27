@@ -162,6 +162,24 @@ class GymRateView(APIView):
         })
 
 
+class GymLikeView(APIView):
+    """Zalni yoqtirganlar ro'yxatiga qo'shish yoki olib tashlash (toggle)."""
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, gym_id):
+        gym = Gym.objects.filter(id=gym_id).first()
+        if not gym:
+            return Response({'detail': 'Zal topilmadi'}, status=404)
+        
+        if request.user in gym.liked_by.all():
+            gym.liked_by.remove(request.user)
+            liked = False
+        else:
+            gym.liked_by.add(request.user)
+            liked = True
+            
+        return Response({'liked': liked})
+
 class GymCategoriesView(APIView):
     """Barcha sport kategoriyalarini qaytaradi."""
     permission_classes = [AllowAny]

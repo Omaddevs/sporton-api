@@ -61,6 +61,7 @@ class GymSerializer(serializers.ModelSerializer):
     ratingCount = serializers.SerializerMethodField()
     ratingPercent = serializers.SerializerMethodField()
     reviews = serializers.SerializerMethodField()
+    liked = serializers.SerializerMethodField()
 
     class Meta:
         model = Gym
@@ -71,8 +72,15 @@ class GymSerializer(serializers.ModelSerializer):
             'facilities', 'sports', 'categories', 'gradient', 'accentColor',
             'lat', 'lng', 'images', 'googleMapsUrl', 'yandexMapsUrl',
             'telegramUrl', 'instagramUrl',
-            'reviews',
+            'reviews', 'liked',
         ]
+
+    def get_liked(self, obj):
+        request = self.context.get('request')
+        if request and request.user and request.user.is_authenticated:
+            # Prefetch can be used to optimize this if hitting N+1
+            return obj.liked_by.filter(id=request.user.id).exists()
+        return False
 
     def get_images(self, obj):
         request = self.context.get('request')

@@ -73,6 +73,13 @@ class Gym(models.Model):
     telegram_url = models.URLField(max_length=500, blank=True, default='', verbose_name="Telegram")
     instagram_url = models.URLField(max_length=500, blank=True, default='', verbose_name="Instagram")
 
+    liked_by = models.ManyToManyField(
+        'accounts.User',
+        blank=True,
+        related_name='liked_gyms',
+        verbose_name="Yoqtirgan foydalanuvchilar"
+    )
+
     class Meta:
         ordering = ['-rating']
         verbose_name = "Zal (Gym)"
