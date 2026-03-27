@@ -43,6 +43,7 @@ class Gym(models.Model):
 
     rating = models.FloatField(default=0, verbose_name="Reyting")
     reviews_count = models.IntegerField(default=0, verbose_name="Sharhlar soni")
+    views_count = models.IntegerField(default=0, verbose_name="Ko'rishlar soni")
     description = models.TextField(blank=True, default='', verbose_name="Tavsif")
 
     monthly_price = models.IntegerField(default=0, verbose_name="Oylik narx (so'm)")

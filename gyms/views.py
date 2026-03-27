@@ -100,7 +100,7 @@ class GymDetailView(APIView):
         _, created = GymView.objects.get_or_create(gym=gym, ip_address=ip)
         if created:
             Gym.objects.filter(pk=gym.pk).update(
-                reviews_count=GymView.objects.filter(gym=gym).count()
+                views_count=GymView.objects.filter(gym=gym).count()
             )
             gym.refresh_from_db()
 
@@ -132,10 +132,15 @@ class GymRateView(APIView):
             defaults={'score': score, 'comment': comment},
         )
 
-        # O'rtacha reytingni yangilash
+        # O'rtacha reytingni va izohlar sonini yangilash
+        rating_count = GymRating.objects.filter(gym=gym).count()
         avg = GymRating.objects.filter(gym=gym).aggregate(a=Avg('score'))['a'] or 0
         rating_percent = round((avg / 5) * 100)
-        Gym.objects.filter(pk=gym.pk).update(rating=round(avg, 1))
+        
+        Gym.objects.filter(pk=gym.pk).update(
+            rating=round(avg, 1),
+            reviews_count=rating_count
+        )
         gym.refresh_from_db()
 
         return Response({
@@ -144,7 +149,7 @@ class GymRateView(APIView):
             'yourComment': comment,
             'newRating': gym.rating,
             'ratingPercent': rating_percent,
-            'ratingCount': GymRating.objects.filter(gym=gym).count(),
+            'ratingCount': rating_count,
         })
 
     def get(self, request, gym_id):

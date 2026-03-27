@@ -50,6 +50,7 @@ class GymSerializer(serializers.ModelSerializer):
     monthlyPrice = serializers.IntegerField(source='monthly_price')
     entryPrice = serializers.IntegerField(source='entry_price')
     reviewsCount = serializers.IntegerField(source='reviews_count')
+    viewsCount = serializers.IntegerField(source='views_count')
     isOpen = serializers.BooleanField(source='is_open')
     accentColor = serializers.CharField(source='accent_color')
     googleMapsUrl = serializers.CharField(source='google_maps_url', allow_blank=True, required=False)
@@ -67,7 +68,7 @@ class GymSerializer(serializers.ModelSerializer):
         model = Gym
         fields = [
             'id', 'name', 'district', 'region', 'address', 'phone',
-            'rating', 'reviewsCount', 'ratingCount', 'ratingPercent',
+            'rating', 'reviewsCount', 'viewsCount', 'ratingCount', 'ratingPercent',
             'description', 'monthlyPrice', 'entryPrice', 'hours', 'isOpen',
             'facilities', 'sports', 'categories', 'gradient', 'accentColor',
             'lat', 'lng', 'images', 'googleMapsUrl', 'yandexMapsUrl',
