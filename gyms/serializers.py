@@ -76,10 +76,16 @@ class GymSerializer(serializers.ModelSerializer):
         result = []
         for img in obj.gallery_images.order_by('order', 'id'):
             if img.image:
-                url = img.image.url
-                if request:
-                    url = request.build_absolute_uri(url)
-                result.append(url)
+                try:
+                    # Render/local muhitda fayl o'chib qolgan bo'lsa, singan URL yubormaymiz.
+                    if not img.image.storage.exists(img.image.name):
+                        continue
+                    url = img.image.url
+                    if request:
+                        url = request.build_absolute_uri(url)
+                    result.append(url)
+                except Exception:
+                    continue
         return result
 
     def get_ratingCount(self, obj):
