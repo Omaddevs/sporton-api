@@ -94,6 +94,8 @@ WSGI_APPLICATION = 'sporton_backend.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
+import dj_database_url
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -101,7 +103,10 @@ DATABASES = {
     }
 }
 
-
+# Agar serverda (Render) maxsus DATABASE_URL yozilgan bo'lsa, PostgreSQL ga o'tadi
+db_from_env = dj_database_url.config(conn_max_age=600, ssl_require=False)
+if db_from_env:
+    DATABASES['default'].update(db_from_env)
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
 
