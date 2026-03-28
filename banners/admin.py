@@ -1,10 +1,11 @@
 from django.contrib import admin
 
+from sporton_backend.admin_mixins import SuperuserOnlyModelAdminMixin
 from .models import PromoBanner
 
 
 @admin.register(PromoBanner)
-class PromoBannerAdmin(admin.ModelAdmin):
+class PromoBannerAdmin(SuperuserOnlyModelAdminMixin, admin.ModelAdmin):
     list_display = ('title', 'target', 'sort_order', 'is_active', 'created_at')
     list_filter = ('is_active', 'target')
     list_editable = ('sort_order', 'is_active')

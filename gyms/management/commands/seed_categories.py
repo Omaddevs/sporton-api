@@ -1,8 +1,11 @@
 """
 python3 manage.py seed_categories
-python3 manage.py seed_categories --reset   # o'chirib qayta yuklash
+python3 manage.py seed_categories --reset   # faqat DEBUG yoki ALLOW_CATEGORY_SEED_RESET=1
 """
-from django.core.management.base import BaseCommand
+import os
+
+from django.conf import settings
+from django.core.management.base import BaseCommand, CommandError
 from gyms.models import GymCategory
 
 
@@ -43,6 +46,12 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         if options['reset']:
+            if not settings.DEBUG and os.environ.get('ALLOW_CATEGORY_SEED_RESET') != '1':
+                raise CommandError(
+                    "Ishlab chiqarishda --reset xavfli (barcha kategoriyalar o'chadi). "
+                    "Agar aniq bilib qilmoqchi bo'lsangiz: ALLOW_CATEGORY_SEED_RESET=1 "
+                    "python manage.py seed_categories --reset"
+                )
             deleted, _ = GymCategory.objects.all().delete()
             self.stdout.write(self.style.WARNING(f"{deleted} ta kategoriya o'chirildi."))
 

@@ -1,8 +1,10 @@
-from django.contrib import admin
 from django import forms
+from django.contrib import admin
 from django.contrib.auth import get_user_model
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
+
+from sporton_backend.admin_mixins import SuperuserOnlyModelAdminMixin
 from .models import Notification, NotificationRecipient
 
 User = get_user_model()
@@ -128,7 +130,7 @@ class NotificationAdminForm(forms.ModelForm):
 
 
 @admin.register(Notification)
-class NotificationAdmin(admin.ModelAdmin):
+class NotificationAdmin(SuperuserOnlyModelAdminMixin, admin.ModelAdmin):
     form = NotificationAdminForm
     list_display  = ('id', 'title', 'recipients_count', 'created_at')
     search_fields = ('title', 'message')
@@ -168,7 +170,7 @@ class NotificationAdmin(admin.ModelAdmin):
 
 
 @admin.register(NotificationRecipient)
-class NotificationRecipientAdmin(admin.ModelAdmin):
+class NotificationRecipientAdmin(SuperuserOnlyModelAdminMixin, admin.ModelAdmin):
     list_display  = ('id', 'notification', 'user', 'is_read', 'read_at')
     list_filter   = ('is_read', 'notification')
     search_fields = ('user__username', 'notification__title')

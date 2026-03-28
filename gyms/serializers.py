@@ -26,14 +26,15 @@ class GymImageSerializer(serializers.ModelSerializer):
 
 
 class GymReviewSerializer(serializers.ModelSerializer):
-    """Bitta foydalanuvchi sharhi — baho + izoh + kimdan."""
+    """Bitta foydalanuvchi sharhi — baho + izoh + kimdan (har biri bitta zal/postga bog‘langan)."""
     username = serializers.SerializerMethodField()
     fullName = serializers.SerializerMethodField()
     date = serializers.DateTimeField(source='updated_at', format='%d.%m.%Y')
+    postId = serializers.IntegerField(source='gym_id', read_only=True)
 
     class Meta:
         model = GymRating
-        fields = ['id', 'username', 'fullName', 'score', 'comment', 'date']
+        fields = ['id', 'postId', 'username', 'fullName', 'score', 'comment', 'date']
 
     def get_username(self, obj):
         return obj.user.username if obj.user else ''

@@ -4,13 +4,14 @@ from django.forms import CheckboxSelectMultiple
 from django.utils.html import format_html
 import re
 
+from sporton_backend.admin_mixins import SuperuserDeleteOnlyMixin, SuperuserOnlyModelAdminMixin
 from .models import Gym, GymCategory, GymImage, GymRating, GymView
 
 
 # ── GymCategory admin (news Category kabi) ───────────────────────────────────
 
 @admin.register(GymCategory)
-class GymCategoryAdmin(admin.ModelAdmin):
+class GymCategoryAdmin(SuperuserOnlyModelAdminMixin, admin.ModelAdmin):
     list_display = ('id', 'icon', 'name', 'slug', 'gym_count', 'order')
     list_editable = ('order',)
     search_fields = ('name', 'slug')
@@ -28,6 +29,15 @@ class GymImageInline(admin.TabularInline):
     model = GymImage
     extra = 1          # 1 ta bo'sh qator (news kabi) — "Add another" bilan ko'paytirishingiz mumkin
     max_num = 20       # maksimal 20 ta rasm
+
+    def has_add_permission(self, request, obj=None):
+        return bool(request.user.is_active and request.user.is_superuser)
+
+    def has_change_permission(self, request, obj=None):
+        return bool(request.user.is_active and request.user.is_superuser)
+
+    def has_delete_permission(self, request, obj=None):
+        return bool(request.user.is_active and request.user.is_superuser)
     fields = ('image', 'caption', 'order', 'preview')
     readonly_fields = ('preview',)
     ordering = ('order', 'id')
@@ -137,7 +147,7 @@ class GymAdminForm(forms.ModelForm):
 # ── GymAdmin ─────────────────────────────────────────────────────────────────
 
 @admin.register(Gym)
-class GymAdmin(admin.ModelAdmin):
+class GymAdmin(SuperuserOnlyModelAdminMixin, admin.ModelAdmin):
     form = GymAdminForm
     inlines = [GymImageInline]
 
@@ -192,7 +202,7 @@ class GymAdmin(admin.ModelAdmin):
 # ── GymImage standalone admin ────────────────────────────────────────────────
 
 @admin.register(GymImage)
-class GymImageAdmin(admin.ModelAdmin):
+class GymImageAdmin(SuperuserOnlyModelAdminMixin, admin.ModelAdmin):
     list_display = ('id', 'gym', 'preview', 'caption', 'order')
     list_select_related = ('gym',)
     list_filter = ('gym',)
@@ -211,7 +221,7 @@ class GymImageAdmin(admin.ModelAdmin):
 # ── GymRating admin ──────────────────────────────────────────────────────────
 
 @admin.register(GymRating)
-class GymRatingAdmin(admin.ModelAdmin):
+class GymRatingAdmin(SuperuserDeleteOnlyMixin, admin.ModelAdmin):
     list_display = ('id', 'gym', 'user', 'stars_display', 'short_comment', 'created_at')
     list_filter = ('score', 'gym')
     search_fields = ('gym__name', 'user__username', 'comment')
@@ -246,7 +256,7 @@ class GymRatingAdmin(admin.ModelAdmin):
 # ── GymView admin ────────────────────────────────────────────────────────────
 
 @admin.register(GymView)
-class GymViewAdmin(admin.ModelAdmin):
+class GymViewAdmin(SuperuserDeleteOnlyMixin, admin.ModelAdmin):
     list_display = ('id', 'gym', 'ip_address', 'viewed_at')
     list_filter = ('gym',)
     readonly_fields = ('gym', 'ip_address', 'viewed_at')

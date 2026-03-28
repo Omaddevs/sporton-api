@@ -117,6 +117,19 @@ class GymRateView(APIView):
         if not gym:
             return Response({'detail': 'Zal topilmadi'}, status=404)
 
+        # Body dagi postId (zal id) URL bilan bir xil bo‘lishi kerak — aralashmasin
+        raw_post = request.data.get('postId')
+        if raw_post is not None and raw_post != '':
+            try:
+                post_id = int(raw_post)
+            except (TypeError, ValueError):
+                return Response({'detail': 'postId butun son bo‘lishi kerak'}, status=400)
+            if post_id != gym_id:
+                return Response(
+                    {'detail': "postId va URL dagi zal identifikatori mos kelmaydi"},
+                    status=400,
+                )
+
         score = request.data.get('score')
         comment = str(request.data.get('comment', '') or '').strip()
         try:
@@ -145,6 +158,7 @@ class GymRateView(APIView):
 
         return Response({
             'ok': True,
+            'postId': gym.id,
             'yourScore': score,
             'yourComment': comment,
             'newRating': gym.rating,
@@ -160,8 +174,9 @@ class GymRateView(APIView):
 
         rating_obj = GymRating.objects.filter(gym=gym, user=request.user).first()
         return Response({
+            'postId': gym.id,
             'yourScore': rating_obj.score if rating_obj else None,
-            'yourComment': rating_obj.comment if rating_obj else '',
+            'yourComment': (rating_obj.comment if rating_obj else '') or '',
             'rating': gym.rating,
             'ratingPercent': round((gym.rating / 5) * 100) if gym.rating else 0,
         })

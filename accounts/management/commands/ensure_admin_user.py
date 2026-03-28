@@ -1,11 +1,19 @@
-from django.core.management.base import BaseCommand
+import os
+
+from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.core.management.base import BaseCommand, CommandError
 
 
 class Command(BaseCommand):
-    help = 'Create default admin user for notifications (dev)'
+    help = 'Lokal uchun default admin (faqat DEBUG yoki ALLOW_ENSURE_ADMIN=1).'
 
     def handle(self, *args, **options):
+        if not settings.DEBUG and os.environ.get('ALLOW_ENSURE_ADMIN') != '1':
+            raise CommandError(
+                'Ishlab chiqarishda default admin yaratish bloklangan. '
+                'python manage.py createsuperuser ishlating yoki ALLOW_ENSURE_ADMIN=1.'
+            )
         User = get_user_model()
         username = 'admin'
         password = 'admin123'
