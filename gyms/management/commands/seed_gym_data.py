@@ -1,6 +1,5 @@
 import os
 
-from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
 
 from gyms.models import Gym
@@ -14,12 +13,11 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         allow = os.environ.get('ALLOW_SEED_COMMANDS', '').lower() in ('1', 'true', 'yes')
-        if not settings.DEBUG and not allow:
+        if not allow:
             raise CommandError(
-                'Ishlab chiqarishda bu buyruq o‘chirilgan (ma’lumotlar tasodifiy '
-                'yozilmasin). Zallarni /admin/ dan qo‘shing. '
-                'Agar bilvosita kerak bo‘lsa: ALLOW_SEED_COMMANDS=1 '
-                'python manage.py seed_gym_data'
+                'Demo zallarni avtomatik yuklash o‘chirilgan. Zallar faqat Django admin '
+                'orqali qo‘shiladi. Faqat bilvosita kerak bo‘lsa: '
+                'ALLOW_SEED_COMMANDS=1 python manage.py seed_gym_data'
             )
         gyms = [
             {
